@@ -1,96 +1,26 @@
 # yctus-moderation-service
 ---
 
-## 🏗️ Microsserviço 1: CommentService
+## 🏗️ Microsserviço 2: ModerationService
 
 ### 📡 Responsabilidades
 
-- Expor uma API REST para criação e consulta de comentários
-- Enviar novos comentários para moderação via POST síncrono (RestClient)
-- Armazenar apenas comentários **aprovados**
+- Expor endpoint REST para validação de comentários
+- Validar se o texto contém palavras proibidas
+- Manter lista de palavras proibidas em memória
 
 ### 🔌 Endpoints
 
 ```http
-POST   /api/comments      # Criar novo comentário
-GET    /api/comments/{id} # Obter comentário específico
-GET    /api/comments      # Listar comentários (paginado)
+POST /api/moderate  # Validar comentário
 ```
 
-### 🎮 Controller: CommentController
+### 🎮 Controller: ModerationController
 
-#### `POST /api/comments`
-**Cria um novo comentário**
+#### `POST /api/moderate`
+**Verifica se o texto possui palavras proibidas**
 
-**Entrada (CommentInput):**
-```json
-{
-  "text": "string",
-  "author": "string"
-}
-```
-
-**Respostas:**
-- `201 Created` - CommentOutput (se aprovado)
-- `422 Unprocessable Entity` - com motivo (se rejeitado)
-
-#### `GET /api/comments/{id}`
-**Retorna detalhes de um comentário**
-
-**Respostas:**
-- `200 OK` - CommentOutput
-- `404 Not Found` - se não existir
-
-#### `GET /api/comments`
-**Lista comentários aprovados com paginação**
-
-**Parâmetros:**
-- `page` - número da página
-- `size` - quantidade por página
-
-**Resposta:**
-```json
-{
-  "page": 0,
-  "size": 10,
-  "totalElements": 45,
-  "totalPages": 5,
-  "content": [
-    {
-      "id": "UUID",
-      "text": "string",
-      "author": "string",
-      "createdAt": "2023-11-15T10:00:00Z"
-    }
-  ]
-}
-```
-
-### 📦 DTOs
-
-#### CommentInput
-```json
-{
-  "text": "string",
-  "author": "string"
-}
-```
-
-#### CommentOutput
-```json
-{
-  "id": "UUID",
-  "text": "string",
-  "author": "string",
-  "createdAt": "2023-11-15T10:00:00Z"
-}
-```
-
-### 🔗 Integração com ModerationService
-
-O CommentService faz uma chamada **POST** para `/api/moderate` do ModerationService.
-
-**Requisição:**
+**Entrada (ModerationInput):**
 ```json
 {
   "text": "string",
@@ -98,7 +28,28 @@ O CommentService faz uma chamada **POST** para `/api/moderate` do ModerationServ
 }
 ```
 
-**Resposta Esperada:**
+**Saída (ModerationOutput):**
+```json
+{
+  "approved": true,
+  "reason": "string"
+}
+```
+
+**Resposta:**
+- `200 OK` - aprovado ou reprovado
+
+### 📦 DTOs
+
+#### ModerationInput
+```json
+{
+  "text": "string",
+  "commentId": "UUID"
+}
+```
+
+#### ModerationOutput
 ```json
 {
   "approved": true,
@@ -108,17 +59,10 @@ O CommentService faz uma chamada **POST** para `/api/moderate` do ModerationServ
 
 ### ✔️ Regras de Validação
 
-- ⚠️ ID deve ser UUID
-- 🚫 Comentários rejeitados **não são armazenados**
+- 🚫 **Palavras Proibidas:** `["ódio", "xingamento"]`
 
 ### ⚙️ Requisitos Técnicos
 
-- 🗄️ **Banco de dados:** H2
-- ⏱️ **Timeout:** 5 segundos para chamadas ao ModerationService
-- 🔌 **Cliente HTTP:** RestClient (síncrono)
-- 🛡️ **Tratamento de Erros:**
-  - Erros gerais na integração → `502 Bad Gateway`
-  - Timeout na integração → `504 Gateway Timeout`
-  - Comentário não encontrado → `404 Not Found`
+- 💾 **Armazenamento:** Palavras proibidas em memória (lista fixa)
 
 ---
