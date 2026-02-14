@@ -3,6 +3,37 @@
 
 ## 🏗️ Microsserviço 2: ModerationService
 
+## Estrutura do Projeto
+- src
+    - main
+        - java
+            - com.yctus.commentservice
+                - api
+                    - controller
+                    - middleware
+                - application
+                    - enuns
+                    - mappers
+                    - models
+                    - usecases
+                    - utils
+                - crosscuting
+                    - utils
+                - domain
+                    - abstractions
+                    - entities
+                    - enuns
+                    - gateways
+                    - utils
+        - infraestructure
+            - configurations
+            - dataproviders
+            - filter
+            - helthchecks
+            - proper ties
+            - utils
+
+
 ### 📡 Responsabilidades
 
 - Expor endpoint REST para validação de comentários
