@@ -5,6 +5,7 @@ import br.com.yctus.api.moderation.comments.domain.entities.response.ModerationR
 import br.com.yctus.api.moderation.comments.domain.entities.resquest.ModerationRequest;
 import lombok.AllArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -14,10 +15,10 @@ public class ModerationController {
 
     private ModerationUseCase moderationUseCase;
 
-    @PostMapping
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE, produces = MediaType.APPLICATION_JSON_VALUE)
     @ResponseStatus(HttpStatus.ACCEPTED)
-    public ModerationResponse verifyComments(@RequestBody ModerationRequest moderationRequest) {
-        ModerationResponse response = moderationUseCase.verifyComments(moderationRequest);
-        return response;
+    public ModerationResponse verifyComments(@RequestBody ModerationRequest moderationRequest){
+        //Thread.sleep(6000);
+        return moderationUseCase.verifyComments(moderationRequest);
     }
 }
