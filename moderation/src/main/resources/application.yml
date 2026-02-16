@@ -1,3 +1,30 @@
 spring.application.name: moderation
 server:
   port: 8081
+
+
+spring:
+  application.name: comments-service
+
+  datasource:
+    url: "jdbc:h2:file:~/yctus-moderation-service-db;CASE_INSENSITIVE_IDENTIFIERS=TRUE"
+    driver-class-name: org.h2.Driver
+    username: sa
+    password: "123"
+
+  h2:
+    console:
+      enabled: true
+      settings:
+        web-allow-others: true
+
+  jpa:
+    database-platform: org.hibernate.dialect.H2Dialect
+    hibernate:
+      ddl-auto: update
+    show-sql: true
+
+# Array de palavras de baixo calão para moderação
+banned: "porcaria;maldito;amaldiçoado;desgraçado;cretino;idiota;imbecil;babaca;palhaço;chato;irritante;miserável;covardia;nojento;desgraçado"
+
+#****************************************************
